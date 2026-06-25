@@ -13,6 +13,8 @@ dotenv.config({ path: "./.env" });
 
 connectDB();
 
+app.use('/subjects', subjectRoutes);
+
 app.listen(PORT, () => {
     console.log(`Server runnning on path http://localhost:${PORT}`);
 });

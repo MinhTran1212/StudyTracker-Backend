@@ -1,5 +1,6 @@
 import mongoose from 'mongoose';
 
+//connecting to mongodb with env to keep private
 export async function connectDB(){
     try {
         await mongoose.connect(process.env.MONGODB_URL!);
