@@ -1,19 +1,30 @@
 import { Router } from 'express';
 import { Subject } from '../models/Subject';
 import mongoose  from 'mongoose';
+import { requireAuth, AuthRequest } from '../middleware/authMiddleware';
 
 const router = Router();
 
 //creating a subject
-router.post('/', async (req, res) => {
-    const subjectName = req.body.name;
+router.post('/', requireAuth, async (req: AuthRequest, res) => {
+    try {
+        const subjectName = req.body.name;
+        const userId = req.userId;
 
-    const newSubject = await Subject.create({
-        name: subjectName,
-        userId: new mongoose.Types.ObjectId() as any
-    });
+        if (!userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
 
-    res.status(201).json(newSubject);
+        const newSubject = await Subject.create({
+            name: subjectName,
+            userId: new mongoose.Types.ObjectId(userId) as any
+        });
+
+        res.status(201).json(newSubject);
+    } catch (error) {
+        console.error("Failed to create subject:", error);
+        res.status(500).json({ error: 'Server failed to save subject' });
+    }
 }); 
 
 //get all subjects
