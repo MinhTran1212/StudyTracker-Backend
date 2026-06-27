@@ -1,13 +1,13 @@
 import mongoose from 'mongoose';
 import { StudySession } from '../models/StudySession';
 import { Router } from 'express';
+import { requireAuth, AuthRequest } from '../middleware/authMiddleware';
 
 const router = Router();
 
-router.post('/', async (req, res) => {
+router.post('/', requireAuth, async (req: AuthRequest, res) => {
     try {
         const { subjectId, duration, notes } = req.body;
-
         const convertedDuration = Number(duration);
 
         if (isNaN(duration) || duration < 0){
@@ -15,6 +15,7 @@ router.post('/', async (req, res) => {
         }
 
         const newSession = await StudySession.create({
+            userId: new mongoose.Types.ObjectId(req.userId) as any,
             subjectId,
             duration: convertedDuration,
             notes
@@ -29,7 +30,23 @@ router.post('/', async (req, res) => {
 
 router.get('/', async (req, res) => {
     try {
-        const sessions = await StudySession.find().select("subjectId duration notes createdAt");
+        const sessions = await StudySession.find().select("userId subjectId duration notes createdAt");
+
+        res.status(201).json(sessions);
+    } catch (error){
+        console.error(error);
+        res.status(500).send("Failed to get sessions");
+    }
+})
+
+router.get('/', requireAuth, async (req: AuthRequest, res) => {
+    const authReq = req as AuthRequest;
+    try {
+        if (!authReq.userId) {
+            return res.status(401).json({ error: 'Unauthorized' });
+        }
+
+        const sessions = await StudySession.find({userId: new mongoose.Types.ObjectId(authReq.userId) as any});
 
         res.status(201).json(sessions);
     } catch (error){

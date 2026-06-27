@@ -30,7 +30,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
 //get all subjects
 router.get('/', async (req, res) => {
     try {
-        const subjects = await Subject.find().select("name topics");
+        const subjects = await Subject.find().select("name topics userId");
 
         res.status(201).json(subjects);
     } catch (error){
@@ -39,6 +39,18 @@ router.get('/', async (req, res) => {
         res.status(500).send("Currently there is an error.");
     }
 });
+
+router.get('/', requireAuth, async (req: AuthRequest, res) => {
+    const authReq = req as AuthRequest;
+    try {
+        const subjects = await Subject.find({userId: new mongoose.Types.ObjectId(authReq.userId)} as any);
+
+        res.status(201).json(subjects);
+    } catch (error){
+        console.error(error);
+        res.status(500).send("Failed to get sessions");
+    }
+})
 
 router.put('/:id/topics', async (req, res)=> {
     try {
@@ -91,5 +103,17 @@ router.delete('/:id/topics/:topicId', async (req, res) => {
     }
 });
 
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const user = await Subject.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        res.send('User deleted successfully');
+    } catch (error){
+        res.status(500).send(error);
+    }
+});
 
 export default router;
