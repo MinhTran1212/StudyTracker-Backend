@@ -2,6 +2,7 @@ import { Router } from 'express';
 import { Subject } from '../models/Subject';
 import mongoose  from 'mongoose';
 import { requireAuth, AuthRequest } from '../middleware/authMiddleware';
+import { StudySession } from '../models/StudySession';
 
 const router = Router();
 

@@ -39,6 +39,65 @@ router.get('/public-list', async (req, res) => {
     }
 })
 
+router.get('/stats', requireAuth, async (req: AuthRequest, res) => {
+    try {
+        const AuthReq = req as AuthRequest;
+        const userId = AuthReq.userId
+
+        const stats = await StudySession.aggregate([
+            {
+                $match: {
+                    userId: new mongoose.Types.ObjectId(userId)
+                }
+            },
+            {
+                $group: {
+                    _id: "$userId", //Grouping every together into 1 report for this user
+                    totalStudyTimeMinutes: { $sum: "$duration" },
+                    totalTimeLogged: { $sum: 1 },
+                    averageSessionDuration: { $avg: "$duration" }
+                }
+            },
+            {
+                $lookup: {
+                    from: "subjects",          // The name of the collection in MongoDB (usually lowercase plural)
+                    localField: "_id",         // The subjectId we grouped by in Stage 2
+                    foreignField: "_id",       // The _id field inside the subjects collection
+                    as: "subjectDetails"       // The name of the temporary array to store the match
+                }
+            },
+            // Stage 4: Flatten the subjectDetails array since lookup returns an array
+            {
+                $unwind: "$subjectDetails"
+            },
+            // Stage 5: Clean up the final output structure
+            {
+                $project: {
+                    _id: 0, // Hide the raw subjectId object
+                    subjectId: "$subjectDetails._id",
+                    subjectName: "$subjectDetails.name",
+                    subjectColor: "$subjectDetails.color",
+                    totalMinutes: 1,
+                    sessionCount: 1
+                }
+            }
+        ]);
+
+        if (stats.length == 0){
+            return res.status(200).json({
+                totalStudyTimeMinutes: 0,
+                totalTimeLogged: 0,
+                averageSessionDuration: 0
+            });
+        }
+
+        return res.status(200).json(stats[0]);
+    } catch (error) {
+        console.error(error);
+        res.status(404).json({error: `Theres a error.`})
+    }
+});
+
 router.get('/', requireAuth, async (req: AuthRequest, res) => {
     const authReq = req as AuthRequest;
     try {
