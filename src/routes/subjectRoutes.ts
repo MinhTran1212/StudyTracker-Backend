@@ -28,7 +28,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
 }); 
 
 //get all subjects
-router.get('/', async (req, res) => {
+router.get('/public-list', async (req, res) => {
     try {
         const subjects = await Subject.find().select("name topics userId");
 
@@ -103,16 +103,62 @@ router.delete('/:id/topics/:topicId', async (req, res) => {
     }
 });
 
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res) => {
     try {
-        const user = await Subject.findByIdAndDelete(req.params.id);
-        if (!user) {
-            return res.status(404).send('User not found');
+        const authReq = req as AuthRequest;
+        const subjectId = req.params.id; 
+        const userId = authReq.userId;
+
+        if (!mongoose.Types.ObjectId.isValid(subjectId as string)){
+            return res.status(400).json({error: 'Invalid ID format'});
         }
 
-        res.send('User deleted successfully');
+        const subject = await Subject.findById(subjectId);
+
+        if (!subject){
+            return res.status(400).json({error: 'Subject not found'});
+        }
+
+        if (subject.userId.toString() !== userId){
+            return res.status(400).json({error: 'You do not have access to this subject'});
+        }
+
+        await Subject.findByIdAndDelete(subjectId);
     } catch (error){
-        res.status(500).send(error);
+        console.error(error);
+        res.status(500).json({ error: 'Server failed to delete subject' });
+    }
+});
+
+router.patch('/update/:id', requireAuth, async (req: AuthRequest, res) => {
+    try {
+        const AuthReq = req as AuthRequest;
+        const subjectId = req.params.id;
+        const userId = AuthReq.userId;
+
+        if (!mongoose.Types.ObjectId.isValid(subjectId as string)){
+            return res.status(500).json({error: `Subject ID is invalid`});
+        }
+
+        const subject = await Subject.findById(subjectId);
+
+        if (!subject){
+            return res.status(500).json({error: `Subject not found`});
+        }
+
+        if (subject.userId.toString() !== userId){
+            return res.status(500).json({error: `your ID does not match this subjectId.`});
+        }
+
+        const updatedSubject = await Subject.findByIdAndUpdate(subjectId,
+            {$set: req.body},
+            {new: true, runValidators: true}
+        );
+
+        res.status(200).json(updatedSubject);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: `There's a error`});
     }
 });
 

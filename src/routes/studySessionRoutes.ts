@@ -28,7 +28,7 @@ router.post('/', requireAuth, async (req: AuthRequest, res) => {
     }
 })
 
-router.get('/', async (req, res) => {
+router.get('/public-list', async (req, res) => {
     try {
         const sessions = await StudySession.find().select("userId subjectId duration notes createdAt");
 
@@ -54,5 +54,50 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
         res.status(500).send("Failed to get sessions");
     }
 })
+
+router.delete('/delete/:id', async (req,res) => {
+    try {
+        const user = await StudySession.findByIdAndDelete(req.params.id);
+        if (!user) {
+            return res.status(404).send('User not found');
+        }
+
+        res.send('Study session deleted successfully');
+    } catch (error){
+            res.status(500).send(error);
+    }
+});
+
+router.patch('/update/:id', requireAuth, async (req: AuthRequest, res) => {
+    try {
+        const AuthReq = req as AuthRequest;
+        const sessionId = req.params.id;
+        const userId = AuthReq.userId;
+
+        if (!mongoose.Types.ObjectId.isValid(sessionId as string)){
+            return res.status(500).json({error: `Subject ID is invalid`});
+        }
+
+        const session = await StudySession.findById(sessionId);
+
+        if (!session){
+            return res.status(500).json({error: `Subject not found`});
+        }
+
+        if (session.userId.toString() !== userId){
+            return res.status(500).json({error: `your ID does not match this subjectId.`});
+        }
+
+        const updatedSession = await StudySession.findByIdAndUpdate(sessionId,
+            {$set: req.body},
+            {new: true, runValidators: true}
+        );
+
+        res.status(200).json(updatedSession);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({error: `There's a error`});
+    }
+});
 
 export default router;
