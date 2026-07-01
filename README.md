@@ -29,8 +29,8 @@ The API is securely deployed in the cloud and accessible at:
 
 ## ⚙️ Local Development Setup
 
-1. **Clone the repository:**
-2. **Install dependencies
-3. **Configure Environment Variables
-4. **Available Scripts
+1. **Clone the repository**
+2. **Install dependencies**
+3. **Configure Environment Variables**
+4. **Available Scripts**
 
