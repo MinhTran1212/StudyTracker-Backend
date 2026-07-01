@@ -10,6 +10,7 @@ import cors from 'cors';
 dotenv.config({ path: "./.env" });
 
 const app = express();
+app.use(cors());
 app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
@@ -20,7 +21,7 @@ app.get('/', (req, res) => {
 app.use('/subjects', subjectRoutes);
 app.use('/studysessions', studySessionRoutes);
 app.use('/register', authRoutes);
-app.use(cors());
+
 
 
 app.listen(PORT, () => {
