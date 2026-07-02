@@ -11,6 +11,48 @@ document.getElementById('logout-btn').addEventListener('click', () => {
 });
 
 let globalSubjects = [];
+let timerInterval = null;
+let totalSeconds = 0;
+
+const clockDisplay = document.getElementById('timer-clock');
+const startTimerBtn = document.getElementById('timer-start-btn');
+const stopTimerBtn = document.getElementById('timer-stop-btn');
+
+startTimerBtn.addEventListener('click', () => {
+    if (timerInterval) return;
+    
+    startTimerBtn.disabled = true;
+    stopTimerBtn.disabled = false;
+    
+    timerInterval = setInterval(() => {
+        totalSeconds++;
+        
+        const hrs = String(Math.floor(totalSeconds / 3600)).padStart(2, '0');
+        const mins = String(Math.floor((totalSeconds % 3600) / 60)).padStart(2, '0');
+        const secs = String(totalSeconds % 60).padStart(2, '0');
+        
+        clockDisplay.innerText = `${hrs}:${mins}:${secs}`;
+    }, 1000);
+});
+
+stopTimerBtn.addEventListener('click', () => {
+    if (!timerInterval) return;
+    
+    clearInterval(timerInterval);
+    timerInterval = null;
+    
+    const calculatedMinutes = Math.max(1, Math.round(totalSeconds / 60));
+    
+    document.getElementById('duration-input').value = calculatedMinutes;
+    
+    totalSeconds = 0;
+    clockDisplay.innerText = "00:00:00";
+    
+    startTimerBtn.disabled = false;
+    stopTimerBtn.disabled = true;
+    
+    document.getElementById('duration-input').scrollIntoView({ behavior: 'smooth' });
+});
 
 async function fetchSubjects() {
     const container = document.getElementById('subjects-container');

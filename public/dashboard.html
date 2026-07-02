@@ -116,6 +116,18 @@
             margin-left: 0.5rem;
             text-decoration: underline;
         }
+        .timer-display {
+            font-size: 2.5rem;
+            font-weight: 800;
+            text-align: center;
+            color: var(--accent);
+            margin: 1rem 0;
+            font-family: monospace;
+        }
+        .timer-controls {
+            display: flex;
+            gap: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -147,7 +159,16 @@
                 </div>
 
                 <div class="card">
-                    <h3>⏱️ Log Study Session</h3>
+                    <h3>⏱️ Focus Lock-In Timer</h3>
+                    <div class="timer-display" id="timer-clock">00:00:00</div>
+                    <div class="timer-controls">
+                        <button id="timer-start-btn" style="background-color: var(--accent);">Start Grind</button>
+                        <button id="timer-stop-btn" style="background-color: var(--error);" disabled>Stop & Log</button>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>📝 Log Study Session Manually</h3>
                     <form id="session-form">
                         <label>Select Subject</label>
                         <select id="subject-select" required>
@@ -172,6 +193,6 @@
         </div>
     </div>
 
-    <script src="dashboard.js?v=11"></script>
+    <script src="dashboard.js?v=12"></script>
 </body>
 </html>
