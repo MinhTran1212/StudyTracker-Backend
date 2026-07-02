@@ -5,7 +5,7 @@ import authRoutes from './routes/authRoutes';
 import { connectDB } from './db';
 import dotenv from 'dotenv';
 import cors from 'cors';
-
+import path from 'path';
 
 dotenv.config({ path: "./.env" });
 
@@ -15,15 +15,17 @@ app.use(express.json());
 const PORT = process.env.PORT || 3000;
 
 connectDB();
-app.get('/', (req, res) => {
-    res.status(200).send("🚀 StudyTracker API is officially live and kicking in the cloud!");
-});
+
+app.use(express.static(path.join(__dirname, '../public')));
+
 app.use('/subjects', subjectRoutes);
 app.use('/studysessions', studySessionRoutes);
 app.use('/register', authRoutes);
 
-
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 app.listen(PORT, () => {
-    console.log(`Server runnning on path http://localhost:${PORT}`);
+    console.log(`Server running on path http://localhost:${PORT}`);
 });

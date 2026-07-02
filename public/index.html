@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTracker - Auth</title>
+    <link rel="stylesheet" href="style.css"> 
+</head>
+<body>
+
+    <div class="auth-container">
+        <h2 id="auth-title">Welcome Back</h2>
+        <p id="auth-subtitle">Log in to track your study grinds</p>
+
+        <div class="input-group">
+            <label>Email Address</label>
+            <input type="email" id="email-input" placeholder="enter your email">
+        </div>
+
+        <div class="input-group">
+            <label>Password</label>
+            <input type="password" id="password-input" placeholder="••••••••">
+        </div>
+
+        <button id="submit-btn">Sign In</button>
+        
+        <p class="toggle-text">
+            <span id="toggle-prompt">Don't have an account?</span> 
+            <a href="#" id="toggle-auth-mode">Sign Up here</a>
+        </p>
+
+        <p id="message" class="msg"></p>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>

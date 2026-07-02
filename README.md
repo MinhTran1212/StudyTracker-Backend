@@ -1,4 +1,4 @@
-# StudyTracker API
+## StudyTracker API
 
 A robust, production-ready REST API built with TypeScript and Express to track study sessions, monitor academic subjects, and calculate analytical statistics. 
 

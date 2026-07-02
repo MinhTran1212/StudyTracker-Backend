@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>StudyTracker - Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .dashboard-container {
+            max-width: 1200px;
+            width: 100%;
+            padding: 2rem;
+            margin: 0 auto;
+        }
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+        .grid-layout {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 2rem;
+        }
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+        .card h3 {
+            margin-bottom: 1rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 0.5rem;
+            font-size: 1.2rem;
+        }
+        .subject-block {
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
+        }
+        .subject-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .topic-list {
+            margin-top: 0.5rem;
+            padding-left: 0.5rem;
+            border-top: 1px dashed var(--border);
+            padding-top: 0.5rem;
+        }
+        .topic-item {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            margin-bottom: 0.25rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+        .session-item {
+            padding: 0.75rem;
+            background-color: var(--bg-main);
+            border-left: 4px solid var(--accent);
+            border-radius: 0 6px 6px 0;
+            margin-bottom: 0.75rem;
+        }
+        .inline-form {
+            display: flex;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+        .inline-form input {
+            padding: 0.4rem;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        .inline-form button {
+            width: auto;
+            padding: 0.4rem 0.75rem;
+            font-size: 0.85rem;
+            margin: 0;
+        }
+        select, textarea, input[type="text"], input[type="number"] {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: var(--bg-main);
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+        }
+        .btn-text {
+            background: none;
+            border: none;
+            color: var(--accent);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0;
+            margin-left: 0.5rem;
+            text-decoration: underline;
+        }
+        .btn-danger-text {
+            background: none;
+            border: none;
+            color: var(--error);
+            cursor: pointer;
+            font-size: 0.8rem;
+            padding: 0;
+            margin-left: 0.5rem;
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="dashboard-container">
+        <div class="header">
+            <div>
+                <h2>Academic Tracker Dashboard</h2>
+                <p style="margin-bottom: 0;">Monitor your coursework and study velocity</p>
+            </div>
+            <button id="logout-btn" style="width: auto; padding: 0.5rem 1rem; background-color: var(--border);">Sign Out</button>
+        </div>
+
+        <div class="grid-layout">
+            <div>
+                <div class="card">
+                    <h3>📚 Active Subjects</h3>
+                    <div id="subjects-container">Loading subjects...</div>
+                </div>
+
+                <div class="card">
+                    <h3>➕ Add New Subject</h3>
+                    <form id="subject-form">
+                        <label>Subject Name</label>
+                        <input type="text" id="subject-name-input" placeholder="e.g. Discrete Mathematics" required style="margin-bottom: 1rem;">
+                        <button type="submit">Create Subject</button>
+                    </form>
+                    <p id="subject-form-msg" class="msg" style="margin-bottom:0; margin-top:0.5rem;"></p>
+                </div>
+
+                <div class="card">
+                    <h3>⏱️ Log Study Session</h3>
+                    <form id="session-form">
+                        <label>Select Subject</label>
+                        <select id="subject-select" required>
+                            <option value="">-- Choose a Subject --</option>
+                        </select>
+                        <label>Duration (Minutes)</label>
+                        <input type="number" id="duration-input" min="1" placeholder="e.g. 90" required style="margin-bottom: 1rem;">
+                        <label>Notes / Focus Area</label>
+                        <textarea id="notes-input" rows="3" placeholder="What concepts did you grind out?"></textarea>
+                        <button type="submit">Save Session</button>
+                    </form>
+                    <p id="form-msg" class="msg" style="margin-bottom:0; margin-top:0.5rem;"></p>
+                </div>
+            </div>
+
+            <div>
+                <div class="card" style="min-height: 500px;">
+                    <h3>📊 Recent Grinds Log</h3>
+                    <div id="sessions-feed">Loading history logs...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="dashboard.js?v=11"></script>
+</body>
+</html>
