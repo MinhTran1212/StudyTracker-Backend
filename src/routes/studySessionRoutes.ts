@@ -92,20 +92,20 @@ router.get('/', requireAuth, async (req: AuthRequest, res) => {
     }
 })
 
-router.delete('/delete/:id', async (req,res) => {
+router.delete('/:id', async (req,res) => {
     try {
         const user = await StudySession.findByIdAndDelete(req.params.id);
         if (!user) {
             return res.status(404).send('User not found');
         }
 
-        res.send('Study session deleted successfully');
+        res.status(200).json({ message: 'Study session deleted successfully' });
     } catch (error){
             res.status(500).send(error);
     }
 });
 
-router.patch('/update/:id', requireAuth, async (req: AuthRequest, res) => {
+router.patch('/:id', requireAuth, async (req: AuthRequest, res) => {
     try {
         const AuthReq = req as AuthRequest;
         const sessionId = req.params.id;

@@ -104,7 +104,7 @@ router.delete('/:id/topics/:topicId', async (req, res) => {
     }
 });
 
-router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res) => {
+router.delete('/:id', requireAuth, async (req: AuthRequest, res) => {
     try {
         const authReq = req as AuthRequest;
         const subjectId = req.params.id; 
@@ -125,13 +125,14 @@ router.delete('/delete/:id', requireAuth, async (req: AuthRequest, res) => {
         }
 
         await Subject.findByIdAndDelete(subjectId);
+        res.status(200).json({ message: 'Subject deleted successfully' });
     } catch (error){
         console.error(error);
         res.status(500).json({ error: 'Server failed to delete subject' });
     }
 });
 
-router.patch('/update/:id', requireAuth, async (req: AuthRequest, res) => {
+router.patch('/:id', requireAuth, async (req: AuthRequest, res) => {
     try {
         const AuthReq = req as AuthRequest;
         const subjectId = req.params.id;
